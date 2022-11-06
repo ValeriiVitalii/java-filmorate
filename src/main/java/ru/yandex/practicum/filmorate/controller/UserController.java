@@ -24,39 +24,44 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) throws ValidationException {
-        validate(user);
+        if (!user.getEmail().contains("@")) {
+            log.info("Объект User не добавлен из-за неверной почты");
+            throw new ValidationException("Неверно указана почта");
+        } if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+            log.info("Объект User не добавлен из-за неверного логина");
+            throw new ValidationException("Логин не может быть пустым и содержать пробелы");
+        } if(user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        } if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.info("Объект User не добавлен  из-за неверной даты рождения");
+            throw new ValidationException("Дата рождения не может быть в будущем");
+        }
         user.setId(id++);
         users.put(user.getId(), user);
-
         log.info("Добавлен новый объект User " + user.toString());
         return user;
     }
 
     @PutMapping
-    public User createOrEdit(@Valid @RequestBody User user) throws ValidationException {
+    public User edit(@Valid @RequestBody User user) throws ValidationException {
         if (!users.containsKey(user.getId())) {
             log.info("Объект User не изменен, тк нету User с таким id");
             throw new ValidationException("Такого пользователя несуществует");
         }
-        validate(user);
-        users.put(user.getId(), user);
-
-        log.info("Изменен объект User " + user.toString());
-        return user;
-    }
-
-    public void validate(@Valid User user) throws ValidationException {
         if (!user.getEmail().contains("@")) {
-            log.info("В объекте User неверная почта");
+            log.info("Объект User не изменен из-за неверной почты");
             throw new ValidationException("Неверно указана почта");
         } if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            log.info("В объекте User неверный логин");
+            log.info("Объект User не изменен из-за неверного логина");
             throw new ValidationException("Логин не может быть пустым и содержать пробелы");
         } if(user.getName().isBlank()) {
             user.setName(user.getLogin());
         } if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.info("В объекте User неверная дата рождения");
+            log.info("Объект User не изменен из-за неверной даты рождения");
             throw new ValidationException("Дата рождения не может быть в будущем");
         }
+        users.put(user.getId(), user);
+        log.info("Изменен объект User " + user.toString());
+        return user;
     }
 }

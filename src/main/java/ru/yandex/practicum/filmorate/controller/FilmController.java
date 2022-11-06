@@ -26,40 +26,46 @@ public class FilmController {
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) throws ValidationException {
-        validate(film);
+        if (film.getName().isBlank()) {
+            log.info("Объект Film не добавлен из-за пустого названия");
+            throw new ValidationException("Название не может быть пустым");
+        } if(film.getDescription().length() > 200) {
+            log.info("Объект Film не добавлен т.к. в описании больше 200 символов");
+            throw new ValidationException("Максимальная длина описания — 200 символов");
+        } if(film.getReleaseDate().isBefore(MIN_BIRTH_FILM)) {
+            log.info("Объект Film не добавлен из-за неверной даты релиза");
+            throw new ValidationException("Дата релиза не может быть раньше 28 декабря 1895 года");
+        } if(film.getDuration() <= MIN_DURATION_FILM) {
+            log.info("Объект Film не добавлен из-за неверной продолжительности фильма");
+            throw new ValidationException("Продолжительность фильма должна быть положительной");
+        }
         film.setId(id++);
         films.put(film.getId(),film);
-
         log.info("Добавлен новый объект Film " + film.toString());
         return film;
     }
 
     @PutMapping
-    public Film createOrEdit(@Valid @RequestBody Film film) throws ValidationException {
+    public Film edit(@Valid @RequestBody Film film) throws ValidationException {
         if (!films.containsKey(film.getId())) {
             log.info("Объект Film не изменен т.к. нету Film с таким id");
             throw new ValidationException("Такого фильма несуществует");
         }
-        validate(film);
-        films.put(film.getId(), film);
-
-        log.info("Добавлен или изменен новый объект Film " + film.toString());
-        return film;
-    }
-
-    public void validate(@Valid Film film) throws ValidationException {
         if (film.getName().isBlank()) {
-            log.info("В объекте Film пустое название");
+            log.info("Объект Film не изменен из-за пустого названия");
             throw new ValidationException("Название не может быть пустым");
         } if(film.getDescription().length() > 200) {
-            log.info("В объекте Film больше 200 символов");
+            log.info("Объект Film не изменен т.к. в описании больше 200 символов");
             throw new ValidationException("Максимальная длина описания — 200 символов");
         } if(film.getReleaseDate().isBefore(MIN_BIRTH_FILM)) {
-            log.info("В объекте Film неверная дата релиза");
+            log.info("Объект Film не изменен из-за неверной даты релиза");
             throw new ValidationException("Дата релиза не может быть раньше 28 декабря 1895 года");
         } if(film.getDuration() <= MIN_DURATION_FILM) {
-            log.info("В объекте Film невенрная продолжительности фильма");
+            log.info("Объект Film не изменен из-за неверной продолжительности фильма");
             throw new ValidationException("Продолжительность фильма должна быть положительной");
         }
+        films.put(film.getId(), film);
+        log.info("Добавлен или изменен новый объект Film " + film.toString());
+        return film;
     }
 }

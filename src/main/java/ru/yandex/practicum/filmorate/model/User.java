@@ -1,18 +1,26 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
-
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
+@FieldDefaults(makeFinal = true, level= AccessLevel.PRIVATE)
 public class User {
-    private int id;
+    @NonFinal
+    int id;
+
     @Email
-    private final String email;
+    String email;
+
     @NotNull
-    private final String login;
-    private String name = "";
-    private final LocalDate birthday;
+    String login;
+
+    @NonFinal
+    String name = "";
+
+    LocalDate birthday;
 }
