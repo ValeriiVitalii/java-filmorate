@@ -25,7 +25,11 @@ public class InMemoryUserStorage implements UserStorage {
         return users.values();
     }
 
-    public User getUser(Long id) {
+    public User getUser(Long id) throws NotFoundException {
+        if(!users.containsKey(id)) {
+            throw new NotFoundException("Этого пользователя несуществует");
+        }
+
         return users.get(id);
     }
 

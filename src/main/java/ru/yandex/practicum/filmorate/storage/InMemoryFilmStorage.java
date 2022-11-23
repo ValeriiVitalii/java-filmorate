@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import java.time.LocalDate;
@@ -20,14 +21,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     private long id = 1;
 
     public Collection<Film> findAll() {
-        log.info("Получены все фильмы");
         return films.values();
     }
 
 
     public Film create(Film film) throws ValidationException {
         if (film.getName().isBlank()) {
-            log.info("Объект Film не добавлен из-за пустого названия");
             throw new ValidationException("Название не может быть пустым");
         } if(film.getDescription().length() > 200) {
             log.info("Объект Film не добавлен т.к. в описании больше 200 символов");
@@ -45,10 +44,10 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
-    public Film edit(Film film) throws ValidationException {
+    public Film edit(Film film) throws Throwable {
         if (!films.containsKey(film.getId())) {
             log.info("Объект Film не изменен т.к. нету Film с таким id");
-            throw new ValidationException("Такого фильма несуществует");
+            throw new Throwable("Такого фильма несуществует");
         }
         if (film.getName().isBlank()) {
             log.info("Объект Film не изменен из-за пустого названия");
@@ -72,7 +71,10 @@ public class InMemoryFilmStorage implements FilmStorage {
         return films;
     }
 
-    public Film getFilm(Long id) {
+    public Film getFilm(Long id) throws NotFoundException {
+        if(!films.containsKey(id)) {
+            throw new NotFoundException("Такого фильма нет");
+        }
         return films.get(id);
     }
 }

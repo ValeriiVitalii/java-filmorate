@@ -6,10 +6,8 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.List;
 
 
 @RestController
@@ -22,8 +20,8 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    @GetMapping("/users/{id}")
-    public User getUser(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable Long id) throws NotFoundException {
         return userService.getUser(id);
     }
 
@@ -42,21 +40,26 @@ public class UserController {
         return userService.edit(user);
     }
 
-    @PostMapping("/users/{id}/friends/{friendId}")
+    @GetMapping("/{id}/friends")
+    public Collection<User> getFriends(@PathVariable Long id) throws NotFoundException {
+            return userService.getFriends(id);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
     public Long addFriend(@PathVariable Long id,
                           @PathVariable Long friendId) throws NotFoundException {
         return userService.addFriend(id, friendId);
     }
 
-    @DeleteMapping("/users/{id}/friends/{friendId}")
+    @DeleteMapping("/{id}/friends/{friendId}")
     public Long removeFriend(@PathVariable Long id,
                              @PathVariable Long friendId) throws NotFoundException {
         return userService.removeFriend(id, friendId);
     }
 
-    @GetMapping("/users/{id}/friends/common/{otherId}")
-    public List<Long> getMutualFriends(@PathVariable Long id,
-                                       @PathVariable Long otherId) throws NotFoundException {
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Collection<User> getMutualFriends(@PathVariable Long id,
+                                             @PathVariable Long otherId) throws NotFoundException {
         return userService.getMutualFriends(id, otherId);
     }
 }

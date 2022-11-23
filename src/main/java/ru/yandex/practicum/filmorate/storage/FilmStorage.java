@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.web.bind.annotation.RequestBody;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import javax.validation.Valid;
@@ -14,9 +15,9 @@ public interface FilmStorage {
     Collection<Film> findAll();
     Film create(@Valid @RequestBody Film film) throws ValidationException;
 
-    Film edit(@Valid @RequestBody Film film) throws ValidationException;
+    Film edit(@Valid @RequestBody Film film) throws Throwable;
 
     Map<Long, Film> getAllFilms();
 
-    Film getFilm(Long id);
+    Film getFilm(Long id) throws NotFoundException;
 }

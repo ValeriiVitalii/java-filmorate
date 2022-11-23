@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public interface UserStorage {
     Collection<User> getAllUsers();
-    User getUser(Long id);
+    User getUser(Long id) throws NotFoundException;
     User create(@Valid @RequestBody User user) throws ValidationException;
     User edit(@Valid @RequestBody User user) throws ValidationException, NotFoundException;
 }
