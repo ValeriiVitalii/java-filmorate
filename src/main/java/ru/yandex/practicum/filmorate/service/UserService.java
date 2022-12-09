@@ -47,12 +47,12 @@ public class UserService {
         return id;
     }
 
-    public Collection<User> getMutualFriends(Long id, Long otherId) throws NotFoundException {
-        if(userStorage.getUser(otherId) == null) {
+    public Collection<User> getMutualFriends(Long id, Long friendId) throws NotFoundException {
+        if(userStorage.getUser(friendId) == null) {
             throw new NotFoundException("Пользователя с таким id не существует");
         }
         Set<Long> friendsUser = userStorage.getUser(id).getFriends();
-        Set<Long> friendsUser2 = userStorage.getUser(otherId).getFriends();
+        Set<Long> friendsUser2 = userStorage.getUser(friendId).getFriends();
         Map<Long, User> mutualFriends = new HashMap<>();
 
         for (Long i : friendsUser) {

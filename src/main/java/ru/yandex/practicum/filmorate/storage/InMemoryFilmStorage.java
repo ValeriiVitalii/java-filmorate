@@ -26,18 +26,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
 
     public Film create(Film film) throws ValidationException {
-        if (film.getName().isBlank()) {
-            throw new ValidationException("Название не может быть пустым");
-        } if(film.getDescription().length() > 200) {
-            log.info("Объект Film не добавлен т.к. в описании больше 200 символов");
-            throw new ValidationException("Максимальная длина описания — 200 символов");
-        } if(film.getReleaseDate().isBefore(MIN_BIRTH_FILM)) {
-            log.info("Объект Film не добавлен из-за неверной даты релиза");
-            throw new ValidationException("Дата релиза не может быть раньше 28 декабря 1895 года");
-        } if(film.getDuration() <= MIN_DURATION_FILM) {
-            log.info("Объект Film не добавлен из-за неверной продолжительности фильма");
-            throw new ValidationException("Продолжительность фильма должна быть положительной");
-        }
+        validation(film);
         film.setId(id++);
         films.put(film.getId(),film);
         log.info("Добавлен новый объект Film " + film.toString());
@@ -46,22 +35,9 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     public Film edit(Film film) throws Throwable {
         if (!films.containsKey(film.getId())) {
-            log.info("Объект Film не изменен т.к. нету Film с таким id");
             throw new Throwable("Такого фильма несуществует");
         }
-        if (film.getName().isBlank()) {
-            log.info("Объект Film не изменен из-за пустого названия");
-            throw new ValidationException("Название не может быть пустым");
-        } if(film.getDescription().length() > 200) {
-            log.info("Объект Film не изменен т.к. в описании больше 200 символов");
-            throw new ValidationException("Максимальная длина описания — 200 символов");
-        } if(film.getReleaseDate().isBefore(MIN_BIRTH_FILM)) {
-            log.info("Объект Film не изменен из-за неверной даты релиза");
-            throw new ValidationException("Дата релиза не может быть раньше 28 декабря 1895 года");
-        } if(film.getDuration() <= MIN_DURATION_FILM) {
-            log.info("Объект Film не изменен из-за неверной продолжительности фильма");
-            throw new ValidationException("Продолжительность фильма должна быть положительной");
-        }
+        validation(film);
         films.put(film.getId(), film);
         log.info("Добавлен или изменен новый объект Film " + film.toString());
         return film;
@@ -76,5 +52,18 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new NotFoundException("Такого фильма нет");
         }
         return films.get(id);
+    }
+
+    public Film validation(Film film) throws ValidationException {
+        if (film.getName().isBlank()) {
+            throw new ValidationException("Название не может быть пустым");
+        } if(film.getDescription().length() > 200) {
+            throw new ValidationException("Максимальная длина описания — 200 символов");
+        } if(film.getReleaseDate().isBefore(MIN_BIRTH_FILM)) {
+            throw new ValidationException("Дата релиза не может быть раньше 28 декабря 1895 года");
+        } if(film.getDuration() <= MIN_DURATION_FILM) {
+            throw new ValidationException("Продолжительность фильма должна быть положительной");
+        }
+        return film;
     }
 }

@@ -34,15 +34,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public User create(@Valid @RequestBody User user) throws ValidationException {
-        if (!user.getEmail().contains("@")) {
-            throw new ValidationException("Неверно указана почта");
-        } if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            throw new ValidationException("Логин не может быть пустым и содержать пробелы");
-        } if(user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        } if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("Дата рождения не может быть в будущем");
-        }
+        validation(user);
         user.setId(id++);
         users.put(user.getId(), user);
         return user;
@@ -52,19 +44,21 @@ public class InMemoryUserStorage implements UserStorage {
         if (!users.containsKey(user.getId())) {
             throw new NotFoundException("Такого пользователя несуществует");
         }
-        if (!user.getEmail().contains("@")) {
-            throw new ValidationException("Неверно указана почта");
-        }
-        if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            throw new ValidationException("Логин не может быть пустым и содержать пробелы");
-        }
-        if (user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("Дата рождения не может быть в будущем");
-        }
+        validation(user);
         users.put(user.getId(), user);
         return user;
+    }
+
+    public User validation(User user) throws ValidationException {
+        if (!user.getEmail().contains("@")) {
+            throw new ValidationException("Неверно указана почта");
+        } if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+            throw new ValidationException("Логин не может быть пустым и содержать пробелы");
+        } if(user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        } if (user.getBirthday().isAfter(LocalDate.now())) {
+            throw new ValidationException("Дата рождения не может быть в будущем");
+        }
+            return user;
     }
 }
