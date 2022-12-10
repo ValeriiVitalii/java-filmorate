@@ -1,18 +1,8 @@
 package ru.yandex.practicum.filmorate;
 
-import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.controller.FilmController;
-import ru.yandex.practicum.filmorate.controller.UserController;
-import ru.yandex.practicum.filmorate.controller.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
-import java.time.LocalDate;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 public class ValidationTest {
 
-    FilmController filmController = new FilmController();
+   /* FilmController filmController = new FilmController();
     UserController userController = new UserController();
 
     @Test
@@ -74,7 +64,5 @@ public class ValidationTest {
         User userTest6 = new User("valval@mail.ru", "Login",
                 LocalDate.now().plusDays(1));
         assertThrows(ValidationException.class, () -> userController.create(userTest6));
-
-
-    }
+    }*/
 }
