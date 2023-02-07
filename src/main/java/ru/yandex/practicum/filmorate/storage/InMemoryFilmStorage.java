@@ -5,10 +5,11 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genres;
+import ru.yandex.practicum.filmorate.model.Mpa;
+
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 @Slf4j
@@ -27,7 +28,6 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     public Film create(Film film) throws ValidationException {
         validation(film);
-        film.setId(id++);
         films.put(film.getId(),film);
         log.info("Добавлен новый объект Film " + film.toString());
         return film;
@@ -52,6 +52,40 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new NotFoundException("Такого фильма нет");
         }
         return films.get(id);
+    }
+
+    @Override
+    public List<Set<Genres>> getGenres() {
+        List<Set<Genres>> genres = new ArrayList<>();
+        for(Film film : films.values()) {
+            genres.add(film.getGenre());
+        }
+        return genres;
+    }
+
+    @Override
+    public Set<Genres> getGenres(Long id) throws Throwable {
+        if (!films.containsKey(films.get(id))) {
+            throw new Throwable("Такого фильма несуществует");
+        }
+        return films.get(id).getGenre();
+    }
+
+    @Override
+    public List<Mpa> getMpa() {
+        List<Mpa> mpa = new ArrayList<>();
+        for(Film f : films.values()) {
+           mpa.add(f.getRating());
+        }
+        return mpa;
+    }
+
+    @Override
+    public Mpa getMpa(int id) throws Throwable {
+        if (!films.containsKey(films.get(id))) {
+            throw new Throwable("Такого фильма несуществует");
+        }
+        return films.get(id).getRating();
     }
 
     public Film validation(Film film) throws ValidationException {

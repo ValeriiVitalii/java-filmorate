@@ -1,32 +1,28 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@FieldDefaults(makeFinal = true, level= AccessLevel.PRIVATE)
 @Data
 public class Film {
-    @NonFinal
-    long id;
+
+    private final long id;
 
     @NotNull
-    String name;
+    private final String name;
 
-    String description;
-    LocalDate releaseDate;
-    long duration;
-
+    private final String description;
+    private final LocalDate releaseDate;
+    private final long duration;
+    private Mpa rating;
     Set<Genres> genre = new HashSet<>();
     Set<Long> likes = new HashSet<>();
 
-    Mpa rating;
+
 
     public Long addLike(Long idUser) {
         likes.add(idUser);
