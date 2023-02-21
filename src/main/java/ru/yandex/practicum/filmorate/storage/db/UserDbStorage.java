@@ -23,33 +23,17 @@ public class UserDbStorage implements UserStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Override
-    public List<User> getAllUsers() {
-        String sql = "select * from users";
-        return  jdbcTemplate.query(sql, this::MapRowToUser);
-    }
 
     @Override
-    public User getUser(int id) throws NotFoundException {
-        String sql = "select * from users where user_id = " + id;
-           return jdbcTemplate.queryForObject(sql, this::MapRowToUser);
-    }
-
-    @Override
-    public User create(User user) throws ValidationException {
+    public User createUser(User user) throws ValidationException {
         validation(user);
         String sql = "insert into users(email, login, name, birthday) values(?, ?, ?, ?)";
         jdbcTemplate.update(sql, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday());
         return getLastUser();
     }
 
-    public User getLastUser () throws ValidationException {
-        String sql = "SELECT * FROM Users WHERE USER_ID =(SELECT max(USER_ID) FROM USERS)";
-        return jdbcTemplate.queryForObject(sql, this::MapRowToUser);
-    }
-
     @Override
-    public User edit(User user) throws ValidationException, NotFoundException {
+    public User editUser(User user) throws ValidationException, NotFoundException {
         validation(user);
         getUser(user.getId());
         String sql = "update users set email = ?, login = ?, name = ?, birthday = ? " +
@@ -58,6 +42,23 @@ public class UserDbStorage implements UserStorage {
                 user.getBirthday(), user.getId());
         user.setId(userID);
         return user;
+    }
+
+    @Override
+    public User getUser(int id) throws NotFoundException {
+        String sql = "select * from users where user_id = " + id;
+        return jdbcTemplate.queryForObject(sql, this::MapRowToUser);
+    }
+
+    public User getLastUser () throws ValidationException {
+        String sql = "SELECT * FROM Users WHERE USER_ID =(SELECT max(USER_ID) FROM USERS)";
+        return jdbcTemplate.queryForObject(sql, this::MapRowToUser);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        String sql = "select * from users";
+        return  jdbcTemplate.query(sql, this::MapRowToUser);
     }
 
     @Override
@@ -100,10 +101,10 @@ public class UserDbStorage implements UserStorage {
 
     private User MapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
         User user = new User(
-                        resultSet.getString("email"),
-                        resultSet.getString("login"),
-                        resultSet.getString("name"),
-                        resultSet.getDate("birthday").toLocalDate());
+                resultSet.getString("email"),
+                resultSet.getString("login"),
+                resultSet.getString("name"),
+                resultSet.getDate("birthday").toLocalDate());
         user.setId(resultSet.getInt("user_id"));
         return user;
     }
@@ -115,7 +116,7 @@ public class UserDbStorage implements UserStorage {
         } if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
             throw new ValidationException("Логин не может быть пустым и содержать пробелы");
         } if(user.getName().isBlank()) {
-         user.setName(user.getLogin()); }
+            user.setName(user.getLogin()); }
         if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("Дата рождения не может быть в будущем");
         }

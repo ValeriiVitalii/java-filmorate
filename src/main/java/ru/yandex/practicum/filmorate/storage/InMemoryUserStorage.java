@@ -36,14 +36,14 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User create(@Valid @RequestBody User user) throws ValidationException {
+    public User createUser(@Valid @RequestBody User user) throws ValidationException {
         validation(user);
         users.put(user.getId(), user);
         return user;
     }
 
     @Override
-    public User edit(@Valid @RequestBody User user) throws ValidationException, NotFoundException {
+    public User editUser(@Valid @RequestBody User user) throws ValidationException, NotFoundException {
         if (!users.containsKey(user.getId())) {
             throw new NotFoundException("Такого пользователя несуществует");
         }
@@ -104,10 +104,10 @@ public class InMemoryUserStorage implements UserStorage {
         } if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
             throw new ValidationException("Логин не может быть пустым и содержать пробелы");
         } //if(user.getName().isBlank()) {
-          //  user.setName(user.getLogin()); }
-         if (user.getBirthday().isAfter(LocalDate.now())) {
+        //  user.setName(user.getLogin()); }
+        if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("Дата рождения не может быть в будущем");
         }
-            return user;
+        return user;
     }
 }

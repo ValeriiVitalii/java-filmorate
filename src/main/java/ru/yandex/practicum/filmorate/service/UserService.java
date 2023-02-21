@@ -21,6 +21,15 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
+
+    public User createUser(User user) throws Throwable {
+        return userStorage.createUser(user);
+    }
+
+    public User editUser(User user) throws ValidationException, NotFoundException {
+        return userStorage.editUser(user);
+    }
+
     public int addFriend(int id, int friendId) throws NotFoundException {
         userStorage.addFriend(id, friendId);
         return id;
@@ -38,35 +47,11 @@ public class UserService {
         return userStorage.getMutualFriends(id, friendId);
     }
 
-    /*public Collection<User> getMutualFriends(int id, int friendId) throws NotFoundException {
-        if(userStorage.getUser(friendId) == null) {
-            throw new NotFoundException("Пользователя с таким id не существует");
-        }
-        Set<Integer> friendsUser = userStorage.getUser(id).getFriends();
-        Set<Integer> friendsUser2 = userStorage.getUser(friendId).getFriends();
-        Map<Integer, User> mutualFriends = new HashMap<>();
-
-        for (int i : friendsUser) {
-            if(friendsUser2.contains(i)) {
-                mutualFriends.put(i, userStorage.getUser(i));
-            }
-        }
-        return mutualFriends.values();
-    }*/
-
     public Collection<User> getAllUsers() {
         return userStorage.getAllUsers();
     }
 
     public User getUser(int id) throws NotFoundException {
         return userStorage.getUser(id);
-    }
-
-    public User create(User user) throws Throwable {
-        return userStorage.create(user);
-    }
-
-    public User edit(User user) throws ValidationException, NotFoundException {
-        return userStorage.edit(user);
     }
 }

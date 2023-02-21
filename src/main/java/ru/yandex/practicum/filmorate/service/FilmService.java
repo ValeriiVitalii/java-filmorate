@@ -11,9 +11,7 @@ import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -26,67 +24,42 @@ public class FilmService {
         this.filmStorage = filmStorage;
     }
 
-    Comparator<Film> comparator = new Comparator<>() {
-        @Override
-        public int compare(Film o1, Film o2) {
-            return o2.getLikes().size() - o1.getLikes().size();
-        }
-    };
+    public Film createFilm(Film film) throws ValidationException {
+        return filmStorage.createFilm(film);
+    }
 
-    public int addLike(int id, int userId) throws NotFoundException {
-        if (filmStorage.getFilm(id) == null || userId <= 0) {
-            throw new NotFoundException("Такого фильма не существует");
-        }
-        Film film = filmStorage.getFilm(id);
-        return film.addLike(userId);
+    public Film editFilm(Film film) throws Throwable {
+        return filmStorage.editFilm(film);
     }
 
     public Film getFilm(int id) throws NotFoundException {
         return filmStorage.getFilm(id);
     }
 
+    public Collection<Film> getAllFilms() {
+        return filmStorage.getAllFilms();
+    }
+
+
+    public int addLike(int id, int userId) throws NotFoundException {
+        return filmStorage.addLike(id, userId);
+    }
+
+
     public int removeLike(int id, int userId) throws NotFoundException {
-        if (filmStorage.getFilm(id) == null || userId <= 0) {
-            throw new NotFoundException("Такого фильма не существует");
-        }
-        return filmStorage.getFilm(id).removeLike(userId);
+        return filmStorage.removeLike(id, userId);
     }
 
-    /*public Collection<Film> getPopularFilm(int count) throws ValidationException {
-        if (count <= 0) {
-            throw new ValidationException("count должен быть больше нуля");
-        }
-        Set<Film> popularFilm = new HashSet<>();
-
-        List<Film> films = new ArrayList<>(filmStorage.getAllFilms().values());
-        Collections.reverse(films);
-        for (Film f : films) {
-            if (count > 0) {
-                popularFilm.add(f);
-                count--;
-            }
-        }
-        return popularFilm;
-    }*/
-
-    public Collection<Film> findAll() {
-        return filmStorage.findAll();
+    public Collection<Film> getPopularFilm(int count) throws ValidationException {
+        return filmStorage.getPopularFilm(count);
     }
 
-    public Film create(Film film) throws ValidationException {
-        return filmStorage.create(film);
-    }
-
-    public Film edit(Film film) throws Throwable {
-        return filmStorage.edit(film);
-    }
-
-    public List<Set<Genres>> getGenres() {
-        return filmStorage.getGenres();
-    }
-
-    public Set<Genres> getGenres(int id) throws Throwable {
+    public Genres getGenres(int id) throws Throwable {
         return filmStorage.getGenres(id);
+    }
+
+    public Collection<Genres> getGenres() {
+        return filmStorage.getGenres();
     }
 
     public List<Rating> getMpa() {
@@ -97,4 +70,3 @@ public class FilmService {
         return filmStorage.getMpa(id);
     }
 }
-

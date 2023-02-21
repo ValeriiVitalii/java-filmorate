@@ -7,8 +7,4 @@ public class Rating {
     int id;
 
     String name;
-
-    public Rating(int id) {
-        this.id = id;
-    }
 }
