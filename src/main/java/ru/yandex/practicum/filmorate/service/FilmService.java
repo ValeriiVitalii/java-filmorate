@@ -66,7 +66,7 @@ public class FilmService {
         return filmStorage.getMpa();
     }
 
-    public Rating getMpa(int id) throws Throwable {
-        return filmStorage.getMpa(id);
+    public Rating getMpa(int idMpa) throws Throwable {
+        return filmStorage.getMpa(idMpa);
     }
 }
