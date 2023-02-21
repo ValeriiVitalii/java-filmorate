@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+
 import javax.validation.Valid;
 import java.util.Collection;
 
@@ -21,7 +22,7 @@ public class UserController {
         this.userService = userService;
     }
     @GetMapping("/{id}")
-    public User getUser(@PathVariable Long id) throws NotFoundException {
+    public User getUser(@PathVariable int id) throws NotFoundException {
         return userService.getUser(id);
     }
 
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user) throws ValidationException {
+    public User create(@Valid @RequestBody User user) throws Throwable {
         return userService.create(user);
     }
 
@@ -41,25 +42,25 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public Collection<User> getFriends(@PathVariable Long id) throws NotFoundException {
+    public Collection<User> getFriends(@PathVariable int id) throws NotFoundException {
             return userService.getFriends(id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public Long addFriend(@PathVariable Long id,
-                          @PathVariable Long friendId) throws NotFoundException {
+    public int addFriend(@PathVariable int id,
+                          @PathVariable int friendId) throws NotFoundException {
         return userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public Long removeFriend(@PathVariable Long id,
-                             @PathVariable Long friendId) throws NotFoundException {
+    public int removeFriend(@PathVariable int id,
+                             @PathVariable int friendId) throws NotFoundException {
         return userService.removeFriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Collection<User> getMutualFriends(@PathVariable Long id,
-                                             @PathVariable Long otherId) throws NotFoundException {
-        return userService.getMutualFriends(id, otherId);
+    public Collection<User> getMutualFriends(@PathVariable int id,
+                                             @PathVariable int otherId) throws NotFoundException {
+       return userService.getMutualFriends(id, otherId);
     }
 }

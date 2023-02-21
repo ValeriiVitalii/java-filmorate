@@ -11,28 +11,36 @@ import java.util.Set;
 @Data
 public class User {
 
-    private final long id;
+    private int id;
 
     @Email
-    private final String email;
+    private String email;
 
     @NotNull
     private final String login;
 
-    private final String name = "";
+    private String name;
 
-    private final LocalDate birthday;
+    private LocalDate birthday;
 
 
-    Set<Long> friends = new HashSet<>();
+    Set<Integer> friends = new HashSet<>();
 
-    public Long addFriends(Long id) {
+    public int addFriends(int id) {
         friends.add(id);
         return id;
     }
 
-    public Long removeFriend(Long id) {
+    public int removeFriend(int id) {
         friends.remove(id);
         return id;
+    }
+
+
+    public User(String email, String login, String name, LocalDate birthday) {
+        this.email = email;
+        this.login = login;
+        this.name = name;
+        this.birthday = birthday;
     }
 }

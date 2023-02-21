@@ -7,7 +7,8 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-import java.util.*;
+
+import java.util.Collection;
 
 @Slf4j
 @Service
@@ -20,58 +21,48 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public Long addFriend(Long id, Long friendId) throws NotFoundException {
-        if(userStorage.getUser(friendId) == null || userStorage.getUser(id) == null) {
-            throw new NotFoundException("Пользователя с таким id не существует");
-        }
-        userStorage.getUser(id).addFriends(friendId);
-       userStorage.getUser(friendId).addFriends(id);
-       return id;
-    }
-
-    public Collection<User> getFriends(Long id) throws NotFoundException {
-        Set<Long> idFriends = userStorage.getUser(id).getFriends();
-        Map<Long, User> friends = new HashMap<>();
-        for (Long idF : idFriends) {
-             friends.put(idF, userStorage.getUser(idF));
-        }
-        return friends.values();
-    }
-
-    public Long removeFriend(Long id, Long friendId) throws NotFoundException {
-        if(userStorage.getUser(friendId) == null) {
-            throw new NotFoundException("Пользователя с таким id не существует");
-        }
-        userStorage.getUser(id).removeFriend(friendId);
-        userStorage.getUser(friendId).removeFriend(id);
+    public int addFriend(int id, int friendId) throws NotFoundException {
+        userStorage.addFriend(id, friendId);
         return id;
     }
 
-    public Collection<User> getMutualFriends(Long id, Long friendId) throws NotFoundException {
+    public Collection<User> getFriends(int id) throws NotFoundException {
+        return userStorage.getFriends(id);
+    }
+
+    public int removeFriend(int id, int friendId) throws NotFoundException {
+        return userStorage.removeFriend(id, friendId);
+    }
+
+    public Collection<User> getMutualFriends(int id, int friendId) throws NotFoundException {
+        return userStorage.getMutualFriends(id, friendId);
+    }
+
+    /*public Collection<User> getMutualFriends(int id, int friendId) throws NotFoundException {
         if(userStorage.getUser(friendId) == null) {
             throw new NotFoundException("Пользователя с таким id не существует");
         }
-        Set<Long> friendsUser = userStorage.getUser(id).getFriends();
-        Set<Long> friendsUser2 = userStorage.getUser(friendId).getFriends();
-        Map<Long, User> mutualFriends = new HashMap<>();
+        Set<Integer> friendsUser = userStorage.getUser(id).getFriends();
+        Set<Integer> friendsUser2 = userStorage.getUser(friendId).getFriends();
+        Map<Integer, User> mutualFriends = new HashMap<>();
 
-        for (Long i : friendsUser) {
+        for (int i : friendsUser) {
             if(friendsUser2.contains(i)) {
                 mutualFriends.put(i, userStorage.getUser(i));
             }
         }
         return mutualFriends.values();
-    }
+    }*/
 
     public Collection<User> getAllUsers() {
         return userStorage.getAllUsers();
     }
 
-    public User getUser(Long id) throws NotFoundException {
+    public User getUser(int id) throws NotFoundException {
         return userStorage.getUser(id);
     }
 
-    public User create(User user) throws ValidationException {
+    public User create(User user) throws Throwable {
         return userStorage.create(user);
     }
 

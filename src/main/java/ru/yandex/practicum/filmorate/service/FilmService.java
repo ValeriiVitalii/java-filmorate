@@ -7,20 +7,23 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genres;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.model.Rating;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
 public class FilmService {
 
-    private final InMemoryFilmStorage inMemoryFilmStorage;
+    private final FilmStorage filmStorage;
 
     @Autowired
-    public FilmService(InMemoryFilmStorage inMemoryFilmStorage) {
-        this.inMemoryFilmStorage = inMemoryFilmStorage;
+    public FilmService(FilmStorage filmStorage) {
+        this.filmStorage = filmStorage;
     }
 
     Comparator<Film> comparator = new Comparator<>() {
@@ -30,32 +33,32 @@ public class FilmService {
         }
     };
 
-    public Long addLike(Long id, Long userId) throws NotFoundException {
-        if (inMemoryFilmStorage.getFilm(id) == null || userId <= 0) {
+    public int addLike(int id, int userId) throws NotFoundException {
+        if (filmStorage.getFilm(id) == null || userId <= 0) {
             throw new NotFoundException("Такого фильма не существует");
         }
-        Film film = inMemoryFilmStorage.getFilm(id);
+        Film film = filmStorage.getFilm(id);
         return film.addLike(userId);
     }
 
-    public Film getFilm(Long id) throws NotFoundException {
-        return inMemoryFilmStorage.getFilm(id);
+    public Film getFilm(int id) throws NotFoundException {
+        return filmStorage.getFilm(id);
     }
 
-    public Long removeLike(Long id, Long userId) throws NotFoundException {
-        if (inMemoryFilmStorage.getFilm(id) == null || userId <= 0) {
+    public int removeLike(int id, int userId) throws NotFoundException {
+        if (filmStorage.getFilm(id) == null || userId <= 0) {
             throw new NotFoundException("Такого фильма не существует");
         }
-        return inMemoryFilmStorage.getFilm(id).removeLike(userId);
+        return filmStorage.getFilm(id).removeLike(userId);
     }
 
-    public Collection<Film> getPopularFilm(int count) throws ValidationException {
+    /*public Collection<Film> getPopularFilm(int count) throws ValidationException {
         if (count <= 0) {
             throw new ValidationException("count должен быть больше нуля");
         }
         Set<Film> popularFilm = new HashSet<>();
 
-        List<Film> films = new ArrayList<>(inMemoryFilmStorage.getAllFilms().values());
+        List<Film> films = new ArrayList<>(filmStorage.getAllFilms().values());
         Collections.reverse(films);
         for (Film f : films) {
             if (count > 0) {
@@ -64,34 +67,34 @@ public class FilmService {
             }
         }
         return popularFilm;
-    }
+    }*/
 
     public Collection<Film> findAll() {
-        return inMemoryFilmStorage.findAll();
+        return filmStorage.findAll();
     }
 
     public Film create(Film film) throws ValidationException {
-        return inMemoryFilmStorage.create(film);
+        return filmStorage.create(film);
     }
 
     public Film edit(Film film) throws Throwable {
-        return inMemoryFilmStorage.edit(film);
+        return filmStorage.edit(film);
     }
 
     public List<Set<Genres>> getGenres() {
-        return inMemoryFilmStorage.getGenres();
+        return filmStorage.getGenres();
     }
 
-    public Set<Genres> getGenres(Long id) throws Throwable {
-        return inMemoryFilmStorage.getGenres(id);
+    public Set<Genres> getGenres(int id) throws Throwable {
+        return filmStorage.getGenres(id);
     }
 
-    public List<Mpa> getMpa() {
-        return inMemoryFilmStorage.getMpa();
+    public List<Rating> getMpa() {
+        return filmStorage.getMpa();
     }
 
-    public Mpa getMpa(int id) throws Throwable {
-        return inMemoryFilmStorage.getMpa(id);
+    public Rating getMpa(int id) throws Throwable {
+        return filmStorage.getMpa(id);
     }
 }
 

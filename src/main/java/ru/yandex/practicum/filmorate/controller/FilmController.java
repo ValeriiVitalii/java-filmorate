@@ -6,7 +6,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genres;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
@@ -28,7 +28,7 @@ public class FilmController {
         return filmService.findAll();
     }
     @GetMapping("/{id}")
-    public Film getFilm(@PathVariable Long id) throws NotFoundException {
+    public Film getFilm(@PathVariable int id) throws NotFoundException {
         return filmService.getFilm(id);
     }
 
@@ -42,22 +42,22 @@ public class FilmController {
         return filmService.edit(film);
     }
     @PutMapping("/{id}/like/{userId}")
-    public Long addLike(@PathVariable Long id,
-                        @PathVariable Long userId) throws NotFoundException {
+    public int addLike(@PathVariable int id,
+                        @PathVariable int userId) throws NotFoundException {
         return filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public Long removeLike(@PathVariable Long id,
-                           @PathVariable Long userId) throws NotFoundException {
+    public int removeLike(@PathVariable int id,
+                           @PathVariable int userId) throws NotFoundException {
         return filmService.removeLike(id, userId);
     }
 
-    @GetMapping("/popular")
+    /*@GetMapping("/popular")
     public Collection<Film> getPopularFilm(@RequestParam(defaultValue = "10")
                                                int count) throws ValidationException {
         return filmService.getPopularFilm(count);
-    }
+    }*/
 
     @GetMapping("/genres")
     public List<Set<Genres>> getGenres() {
@@ -65,17 +65,17 @@ public class FilmController {
     }
 
     @GetMapping("/genres{id}")
-    public Set<Genres> getGenres(@PathVariable Long id) throws Throwable {
+    public Set<Genres> getGenres(@PathVariable int id) throws Throwable {
         return filmService.getGenres(id);
     }
 
     @GetMapping("/mpa")
-    public List<Mpa> getMpa() {
+    public List<Rating> getMpa() {
         return filmService.getMpa();
     }
 
     @GetMapping("/mpa{id}")
-    public Mpa getMpa(@PathVariable int id) throws Throwable {
+    public Rating getMpa(@PathVariable int id) throws Throwable {
         return filmService.getMpa(id);
     }
 }

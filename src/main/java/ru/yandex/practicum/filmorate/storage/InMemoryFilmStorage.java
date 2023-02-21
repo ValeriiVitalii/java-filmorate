@@ -6,7 +6,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genres;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.Rating;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -16,10 +16,10 @@ import java.util.*;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
 
-    public Map<Long, Film> films = new HashMap<>();
+    public Map<Integer, Film> films = new HashMap<>();
     private static final LocalDate MIN_BIRTH_FILM = LocalDate.of(1895, 12, 28);
     final static long MIN_DURATION_FILM = 0;
-    private long id = 1;
+    private int id = 1;
 
     public Collection<Film> findAll() {
         return films.values();
@@ -43,11 +43,11 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
-    public Map<Long, Film> getAllFilms() {
+    public Map<Integer, Film> getAllFilms() {
         return films;
     }
 
-    public Film getFilm(Long id) throws NotFoundException {
+    public Film getFilm(int id) throws NotFoundException {
         if(!films.containsKey(id)) {
             throw new NotFoundException("Такого фильма нет");
         }
@@ -64,7 +64,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Set<Genres> getGenres(Long id) throws Throwable {
+    public Set<Genres> getGenres(int id) throws Throwable {
         if (!films.containsKey(films.get(id))) {
             throw new Throwable("Такого фильма несуществует");
         }
@@ -72,20 +72,22 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Mpa> getMpa() {
-        List<Mpa> mpa = new ArrayList<>();
+    public List<Rating> getMpa() {
+        /*List<Mpa> mpa = new ArrayList<>();
         for(Film f : films.values()) {
            mpa.add(f.getRating());
-        }
+        }*/
+        List<Rating> mpa = new ArrayList<>(); //удалить!!!
         return mpa;
     }
 
     @Override
-    public Mpa getMpa(int id) throws Throwable {
-        if (!films.containsKey(films.get(id))) {
+    public Rating getMpa(int id) throws Throwable {
+        /*if (!films.containsKey(films.get(id))) {
             throw new Throwable("Такого фильма несуществует");
         }
-        return films.get(id).getRating();
+        return films.get(id).getRating();*/
+        return new Rating(1); //удалить
     }
 
     public Film validation(Film film) throws ValidationException {

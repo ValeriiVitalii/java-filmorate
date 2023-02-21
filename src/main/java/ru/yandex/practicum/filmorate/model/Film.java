@@ -10,26 +10,34 @@ import java.util.Set;
 @Data
 public class Film {
 
-    private final long id;
-
+    private int id;
     @NotNull
     private final String name;
+    private String description;
+    private LocalDate releaseDate;
+    private long duration;
 
-    private final String description;
-    private final LocalDate releaseDate;
-    private final long duration;
-    private Mpa rating;
+    private Rating rating;
+
     Set<Genres> genre = new HashSet<>();
-    Set<Long> likes = new HashSet<>();
+    Set<Integer> likes = new HashSet<>();
 
+    public Film(String name, String description, LocalDate releaseDate, long duration, int rating) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        Rating m = new Rating(rating);
+        this.rating = m;
+        //this.rating = rating;
+    }
 
-
-    public Long addLike(Long idUser) {
+    public int addLike(int idUser) {
         likes.add(idUser);
         return idUser;
     }
 
-    public Long removeLike(Long idUser) {
+    public int removeLike(int idUser) {
         likes.remove(idUser);
         return idUser;
     }
@@ -37,4 +45,20 @@ public class Film {
         this.genre.add(genre);
         return genre;
     }
+
+    public int getRating() {
+       return rating.getId();
+    }
+
+    public void setRating(int id) {
+        rating.setId(id);
+    }
+
+    /*public String getMpa() {
+        return rating.getMpa();
+    }
+
+    public void setMpa(String name) {
+        rating.setMpa(name);
+    }*/
 }
