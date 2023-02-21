@@ -25,4 +25,10 @@ public class ErrorHandler {
     public ErrorResponse internalServerError(final Throwable a) {
         return new ErrorResponse("Непредвиденная ошибка", a.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse internalServerError(final RuntimeException a) {
+        return new ErrorResponse("Непредвиденная ошибка", a.getMessage());
+    }
 }

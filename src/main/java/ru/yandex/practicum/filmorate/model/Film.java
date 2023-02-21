@@ -1,44 +1,43 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-@FieldDefaults(makeFinal = true, level= AccessLevel.PRIVATE)
 @Data
 public class Film {
-    @NonFinal
-    long id;
 
+    private int id;
     @NotNull
-    String name;
+    private final String name;
+    private String description;
+    private LocalDate releaseDate;
+    private long duration;
+    private Rating mpa;
 
-    String description;
-    LocalDate releaseDate;
-    long duration;
+    List<Genres> genres = new ArrayList<>();
+    Set<Integer> likes = new HashSet<>();
 
-    Set<Genres> genre = new HashSet<>();
-    Set<Long> likes = new HashSet<>();
+    public Film(String name, String description, LocalDate releaseDate, long duration, Rating mpa) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
+    }
 
-    Mpa rating;
-
-    public Long addLike(Long idUser) {
+    public int addLike(int idUser) {
         likes.add(idUser);
         return idUser;
     }
 
-    public Long removeLike(Long idUser) {
+    public int removeLike(int idUser) {
         likes.remove(idUser);
         return idUser;
-    }
-    public Genres addGenre(Genres genre) {
-        this.genre.add(genre);
-        return genre;
     }
 }

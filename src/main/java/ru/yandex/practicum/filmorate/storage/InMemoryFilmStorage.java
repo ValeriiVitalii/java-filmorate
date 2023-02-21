@@ -5,35 +5,40 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genres;
+import ru.yandex.practicum.filmorate.model.Rating;
+
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 @Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
 
-    public Map<Long, Film> films = new HashMap<>();
+    public Map<Integer, Film> films = new HashMap<>();
     private static final LocalDate MIN_BIRTH_FILM = LocalDate.of(1895, 12, 28);
     final static long MIN_DURATION_FILM = 0;
-    private long id = 1;
-
-    public Collection<Film> findAll() {
-        return films.values();
-    }
+    private int id = 1;
 
 
-    public Film create(Film film) throws ValidationException {
+    Comparator<Film> comparator = new Comparator<>() {
+        @Override
+        public int compare(Film o1, Film o2) {
+            return o2.getLikes().size() - o1.getLikes().size();
+        }
+    };
+
+    @Override
+    public Film createFilm(Film film) throws ValidationException {
         validation(film);
-        film.setId(id++);
         films.put(film.getId(),film);
         log.info("Добавлен новый объект Film " + film.toString());
         return film;
     }
 
-    public Film edit(Film film) throws Throwable {
+    @Override
+    public Film editFilm(Film film) throws Throwable {
         if (!films.containsKey(film.getId())) {
             throw new Throwable("Такого фильма несуществует");
         }
@@ -43,15 +48,73 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
-    public Map<Long, Film> getAllFilms() {
-        return films;
-    }
-
-    public Film getFilm(Long id) throws NotFoundException {
+    @Override
+    public Film getFilm(int id) throws NotFoundException {
         if(!films.containsKey(id)) {
             throw new NotFoundException("Такого фильма нет");
         }
         return films.get(id);
+    }
+
+    @Override
+    public Collection<Film> getAllFilms() {
+        return films.values();
+    }
+
+    @Override
+    public Genres getGenres(int id) throws Throwable {
+        if (!films.containsKey(films.get(id))) {
+            throw new Throwable("Такого фильма несуществует");
+        }
+        return films.get(id).getGenres().get(1);
+    }
+
+    @Override
+    public Collection<Genres> getGenres() {
+        return films.get(id).getGenres();
+    }
+
+    @Override
+    public Rating getMpa(int id) throws Throwable {
+        return new Rating();
+    }
+
+    @Override
+    public List<Rating> getMpa() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public int addLike(int id, int userId) throws NotFoundException {
+        if (getFilm(id) == null || userId <= 0) {
+            throw new NotFoundException("Такого фильма не существует");
+        }
+        Film film = getFilm(id);
+        return film.addLike(userId);
+    }
+
+    public Collection<Film> getPopularFilm(int count) throws ValidationException {
+        if (count <= 0) {
+            throw new ValidationException("count должен быть больше нуля");
+        }
+        Set<Film> popularFilm = new HashSet<>();
+
+        List<Film> films = new ArrayList<>(getAllFilms());
+        Collections.reverse(films);
+        for (Film f : films) {
+            if (count > 0) {
+                popularFilm.add(f);
+                count--;
+            }
+        }
+        return popularFilm;
+    }
+
+    public int removeLike(int id, int userId) throws NotFoundException {
+        if (getFilm(id) == null || userId <= 0) {
+            throw new NotFoundException("Такого фильма не существует");
+        }
+        return getFilm(id).removeLike(userId);
     }
 
     public Film validation(Film film) throws ValidationException {

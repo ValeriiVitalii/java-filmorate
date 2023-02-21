@@ -1,23 +1,27 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import javax.validation.Valid;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import ru.yandex.practicum.filmorate.model.Genres;
+import ru.yandex.practicum.filmorate.model.Rating;
+
+import java.util.*;
 
 public interface FilmStorage {
 
-    Map<Long, Film> films = new HashMap<>();
-    Collection<Film> findAll();
-    Film create(@Valid @RequestBody Film film) throws ValidationException;
+    Map<Integer, Film> films = new HashMap<>();
 
-    Film edit(@Valid @RequestBody Film film) throws Throwable;
+    Film createFilm(Film film) throws ValidationException;
+    Film editFilm(Film film) throws Throwable;
+    Film getFilm(int id) throws NotFoundException;
+    Collection<Film> getAllFilms();
+    Genres getGenres(int id) throws Throwable;
+    Collection<Genres> getGenres();
+    List<Rating> getMpa();
+    Rating getMpa(int id) throws Throwable;
+    int addLike(int id, int userId) throws NotFoundException;
+    Collection<Film> getPopularFilm(int count) throws ValidationException;
+    int removeLike(int idFilm, int userId) throws NotFoundException;
 
-    Map<Long, Film> getAllFilms();
-
-    Film getFilm(Long id) throws NotFoundException;
 }
