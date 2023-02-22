@@ -23,6 +23,8 @@ public class Film {
     List<Genres> genres = new ArrayList<>();
     Set<Integer> likes = new HashSet<>();
 
+    int rate;
+
     public Film(String name, String description, LocalDate releaseDate, long duration, Rating mpa) {
         this.name = name;
         this.description = description;

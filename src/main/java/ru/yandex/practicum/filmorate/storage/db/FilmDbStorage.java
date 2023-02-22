@@ -107,9 +107,9 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Rating getMpa(int id) {
+    public Rating getMpa(int idMpa) {
         String sql = "select * From MPA where MPA_ID = ?";
-        return jdbcTemplate.queryForObject(sql, this::mapRowToRating, id);
+        return jdbcTemplate.queryForObject(sql, this::mapRowToRating, idMpa);
     }
 
     @Override
