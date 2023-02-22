@@ -90,6 +90,7 @@ class FilmoRateApplicationTests {
 	@Test
 	public void testGetAndCreateFilm() throws ValidationException, NotFoundException {
 		Film film = new Film("Гарри Поттер", "Magic", LocalDate.now(), 90, new Rating());
+		Film film2 = new Film("Гарри Поттер", "Magic", LocalDate.now(), 90, new Rating());
 		film.getMpa().setId(1);
 		filmDbStorage.createFilm(film);
 		Film film1 = filmDbStorage.getFilm(1);
